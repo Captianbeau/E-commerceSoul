@@ -3,8 +3,9 @@ const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
 
+//All categories
 router.get('/', async (req, res) => {
-  //calls all categories and waits for results
+  
   try{
     const categoryData = await Category.findAll({
       include:[{ model: Product }],
@@ -15,7 +16,7 @@ router.get('/', async (req, res) => {
             sequelize.literal(
               '(SELECT product_name FROM product WHERE product.category_id = category.id )'
             ),
-            'products',
+            'product',
           ],
         ],
       },
@@ -25,12 +26,37 @@ router.get('/', async (req, res) => {
     res.status(500).json(err);
   }
 });
+//All categories end
 
-router.get('/:id', (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
+//Single category by id
+router.get('/:id', async (req, res) => {
+  
+  try{
+    const categoryData = await Category.findByPk(req.params.id,{
+      include: [{ model: Product }],
+      attributes: {
+        include: [
+          [
+            sequelize.literal(
+              '(SELECT product_name FROM product WHERE product.category_id = category.id)'
+            ),
+            'product',
+          ],
+        ],
+      },
+    });
+
+    if(!categoryData){
+      res.status(404).json({message: 'No category found with that id'});
+      return;
+    }
+
+    res.status(200).json(driverData);
+  }catch (err) {
+    res.status(500).json(err);
+  }
 });
-
+//Single category end
 router.post('/', (req, res) => {
   // create a new category
 });
