@@ -3,9 +3,27 @@ const { Category, Product } = require('../../models');
 
 // The `/api/categories` endpoint
 
-router.get('/', (req, res) => {
-  // find all categories
-  // be sure to include its associated Products
+router.get('/', async (req, res) => {
+  //calls all categories and waits for results
+  try{
+    const categoryData = await Category.findAll({
+      include:[{ model: Product }],
+      attributes:{
+        include: [
+          [
+            //select names of products under the name products
+            sequelize.literal(
+              '(SELECT product_name FROM product WHERE product.category_id = category.id )'
+            ),
+            'products',
+          ],
+        ],
+      },
+    });
+    res.status(200).json(categoryData);
+  }catch (err) {
+    res.status(500).json(err);
+  }
 });
 
 router.get('/:id', (req, res) => {
