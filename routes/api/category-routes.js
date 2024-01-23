@@ -71,7 +71,7 @@ router.post('/', async (req, res) => {
 });
 //Create new category end
 
-//Update category by id REVIEW
+//Update category by id REVIEW copied to tag-routes message?
 router.put('/:id', async (req, res) => {
   // update a category by its `id` value
   try {
@@ -90,7 +90,7 @@ router.put('/:id', async (req, res) => {
 });
 //Update category by id end
 
-//Delete category by id REVIEW
+//Delete category by id REVIEW copied to tag-routes
 router.delete('/:id', async (req, res) => {
 
   try {
