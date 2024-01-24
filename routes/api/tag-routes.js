@@ -8,18 +8,18 @@ router.get('/', async (req, res) => {
   // find all tags 
   try {
     const tagData = await Tag.findAll({
-      include: [{ model: Product }],
-      attributes: {
-        include: [
-          [
-            //select names of products under the name products
-            sequelize.literal(
-              '(SELECT product_name FROM product WHERE product.tag_id = tag.id )'
-            ),
-            'product',
-          ],
-        ],
-      },
+      include: [{ model: Product, through: ProductTag}],
+      // attributes: {
+      //   include: [
+      //     [
+      //       //select names of products under the name products
+      //       sequelize.literal(
+      //         '(SELECT product_name FROM product WHERE product.tag_id = tag.id )'
+      //       ),
+      //       'product',
+      //     ],
+      //   ],
+      // },
     });
     res.status(200).json(tagData);
   } catch (err) {
@@ -33,17 +33,17 @@ router.get('/:id', async (req, res) => {
   // find a single tag by its `id`
   try {
     const tagData = await Tag.findByPk(req.params.id, {
-      include: [{ model: Product }],
-      attributes: {
-        include: [
-          [
-            sequelize.literal(
-              '(SELECT product_name FROM product WHERE product.tag_id = tag.id)'
-            ),
-            'product',
-          ],
-        ],
-      },
+      include: [{ model: Product, through: ProductTag}],
+      // attributes: {
+      //   include: [
+      //     [
+      //       sequelize.literal(
+      //         '(SELECT product_name FROM product WHERE product.tag_id = tag.id)'
+      //       ),
+      //       'product',
+      //     ],
+      //   ],
+      // },
     });
 
     if (!tagData) {
